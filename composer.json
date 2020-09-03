@@ -1,0 +1,12 @@
+{
+    "name": "yakiv-khorunzhyi/process-manager",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "yakiv",
+            "email": "yakiv.khorunzhyi@gmail.com"
+        }
+    ],
+    "require": {}
+}
