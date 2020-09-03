@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core;
+
+use Core\Exceptions\FileNotFoundException;
 
 class ProcessSetting
 {
@@ -16,11 +20,30 @@ class ProcessSetting
     /** @var int */
     protected $taskWaitTime = 50000;
 
+    /** @var string */
+    protected $autoloaderPath = '/../../autoload.php';
+
     /**
      * @var string
      * @example /usr/local/php/bin/php
      */
     protected $pathToPhp = PHP_BINARY;
+
+    /**
+     * @return string
+     */
+    public function getAutoloaderPath(): string
+    {
+        return $this->autoloaderPath;
+    }
+
+    /**
+     * @param string $autoloaderPath
+     */
+    public function setAutoloaderPath(string $autoloaderPath): void
+    {
+        $this->autoloaderPath = $autoloaderPath;
+    }
 
     /**
      * @return string

@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core;
 
 use Core\Processes\Processable;
 use Core\Executable;
+use Core\Processes\SimpleProcess;
+use Core\Runtime\ParentProcess;
 
 class ProcessManager
 {
@@ -47,39 +51,15 @@ class ProcessManager
             throw new \ExtensionException('Need pcntl and posix extension.');
         }
 
-        $this->setting    = $settings ?? new ProcessSetting();
+        $this->setting = $settings ?? new ProcessSetting();
         $this->statistics = new ProcessStatistics();
     }
 
     /**
-     * @param Executable|callable $task
-     * @param int|null            $outputLength
-     *
-     * @return \Spatie\Async\Process\Runnable
-     */
-    public function add($process, ?int $outputLength = null): Runnable
-    {
-        if (!is_callable($process) && !$process instanceof Runnable) {
-            throw new InvalidArgumentException('The process passed to Pool::add should be callable.');
-        }
-
-        if (!$process instanceof Runnable) {
-            $process = ParentRuntime::createProcess(
-                $process,
-                $outputLength,
-                $this->binary
-            );
-        }
-
-        $this->putInQueue($process);
-
-        return $process;
-    }
-
-    /**
-     * @param \Core\Helpers\IExecutable|callable $task
+     * @param \Core\IExecutable|callable $task
      *
      * @return \Core\Processes\Processable
+     * @exception FileNotFoundException
      */
     public function add($task): Processable
     {
@@ -89,6 +69,13 @@ class ProcessManager
             );
         }
 
+        if (!$task instanceof Processable) {
+            $process = new ParentProcess($this->setting->getAutoloaderPath());
+        }
+
+        $this->putInQueue($process);
+
+        return $process;
 
     }
 
@@ -96,9 +83,9 @@ class ProcessManager
     {
         $this->statistics->setInfo([
             'processes' => $this->processes,
-            'finished'  => $this->finished,
-            'timeout'   => $this->timeouts,
-            'failed'    => $this->failed,
+            'finished' => $this->finished,
+            'timeout' => $this->timeouts,
+            'failed' => $this->failed,
         ]);
 
         return $this->statistics;

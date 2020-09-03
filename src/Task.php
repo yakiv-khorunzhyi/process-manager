@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Helpers;
+
+use Core\Executable;
 
 class Task
 {

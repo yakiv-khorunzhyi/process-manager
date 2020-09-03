@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core\Processes\Async;
 
 use Core\Processes\AbstractProcess;

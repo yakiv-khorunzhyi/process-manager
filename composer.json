@@ -2,11 +2,20 @@
     "name": "yakiv-khorunzhyi/process-manager",
     "type": "library",
     "license": "MIT",
+    "version": "0.1",
     "authors": [
-        {
-            "name": "yakiv",
-            "email": "yakiv.khorunzhyi@gmail.com"
-        }
+          {
+              "name": "yakiv",
+              "email": "yakiv.khorunzhyi@gmail.com"
+          }
     ],
-    "require": {}
+    "autoload": {
+        "psr-4": {
+            "\\Core\\": "/src"
+        }
+    },
+    "require": {
+        "php": "^7.1",
+        "opis/closure": "^3.4.2"
+    }
 }
