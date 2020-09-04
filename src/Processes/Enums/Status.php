@@ -10,5 +10,9 @@ class Status
 
     const STARTED = 'started';
 
+    const FINISHED = 'finished';
+
+    const FAILED = 'failed';
+
     const TERMINATED = 'terminated';
 }

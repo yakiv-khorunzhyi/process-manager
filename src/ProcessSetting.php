@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Core;
 
-use Core\Exceptions\FileNotFoundException;
-
 class ProcessSetting
 {
     /** @var int */

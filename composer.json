@@ -16,6 +16,6 @@
     },
     "require": {
         "php": "^7.1",
-        "opis/closure": "^3.4.2"
+        "opis/closure": "3.4.2"
     }
 }

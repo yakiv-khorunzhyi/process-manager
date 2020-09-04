@@ -6,5 +6,5 @@ namespace Core;
 
 interface Executable
 {
-    public function execute();
+    public function __invoke();
 }
