@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core;
 
-class ProcessStatistics
+class ProcessManagerStatistics
 {
     protected $info;
 
@@ -12,9 +12,9 @@ class ProcessStatistics
     {
         $this->info = [
             'processes' => $info['processes'],
-            'finished'  => $info['finished'],
-            'timeout'   => $info['timeout'],
-            'failed'    => $info['failed'],
+            'finished' => $info['finished'],
+            'timeout' => $info['timeout'],
+            'failed' => $info['failed'],
         ];
 
         return $this;

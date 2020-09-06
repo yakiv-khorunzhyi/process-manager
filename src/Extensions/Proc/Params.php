@@ -28,7 +28,7 @@ class Params
     /**
      * @param array $commandParams
      */
-    public function transformParamsToLine(array $commandParams): void
+    public function transformParamsToCommandLine(array $commandParams): void
     {
         $mapCommandLine = array_map([$this, 'escapeArgument'], $commandParams);
 

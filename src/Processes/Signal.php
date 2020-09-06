@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Enums\Processes;
+namespace Core\Processes;
 
 class Signal
 {

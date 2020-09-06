@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Exceptions;
 
-class Code
+class ExceptionCode
 {
     const EXTENSION_NOT_FOUND = 0;
 

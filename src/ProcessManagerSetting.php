@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core;
 
-class ProcessSetting
+class ProcessManagerSetting
 {
     /** @var int */
     protected $tasksPerProcess = 1;
@@ -26,6 +26,10 @@ class ProcessSetting
      * @example /usr/local/php/bin/php
      */
     protected $pathToPhp = PHP_BINARY;
+
+    /**
+     * ---===### Getters ###===---
+     */
 
     /**
      * @return string
@@ -50,6 +54,10 @@ class ProcessSetting
     {
         return $this->pathToPhp;
     }
+
+    /**
+     * ---===### Setters ###===---
+     */
 
     /**
      * @param string $pathToPhp

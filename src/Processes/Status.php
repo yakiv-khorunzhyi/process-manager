@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Core\Enums\Processes;
+namespace Core\Processes;
 
 class Status
 {
-    const READY = 'ready';
+    const NOT_STARTED = 'not started';
 
-    const STARTED = 'started';
+    const RUNNING = 'running';
 
     const FINISHED = 'finished';
 

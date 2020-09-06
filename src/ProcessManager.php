@@ -4,52 +4,40 @@ declare(strict_types=1);
 
 namespace Core;
 
-use Core\Enums\Processes\Status;
-use Core\Extensions\Extension;
 use Core\Processes\Process;
 use Core\Processes\Processable;
-use Core\Processes\TaskPacker;
+use Core\Processes\Serializator;
 
 class ProcessManager
 {
-    /** @var array */
-    protected $processes = [];
+    protected $storage;
 
-    /** @var array */
-    protected $inProgress = [];
 
-    /** @var array */
-    protected $finished = [];
+    /** @var string */
+    protected $fileExecutor = __DIR__ . '/Processes/Runtime/runtime.php';
 
-    /** @var array */
-    protected $failed = [];
 
-    /** @var array */
-    protected $timeouts = [];
-
-    /** @var array */
-    protected $results = [];
-
-    /** @var \Core\ProcessStatistics */
+    /** @var \Core\ProcessManagerStatistics */
     protected $statistics;
 
-    /** @var \Core\ProcessSetting */
+    /** @var \Core\ProcessManagerSetting */
     protected $setting;
+
 
     /**
      * ProcessManager constructor.
      *
-     * @param \Core\ProcessSetting|null $settings
+     * @param \Core\ProcessManagerSetting|null $settings
      *
      * @throws \ExtensionException
      */
-    public function __construct(ProcessSetting $settings = null)
+    public function __construct(\Core\ProcessManagerSetting $settings = null)
     {
-        if (!Extension::has(['pcntl', 'posix'])) {
+        if (!\Core\Extensions\Extension::has(['pcntl', 'posix'])) {
             throw new \ExtensionException('Need pcntl and posix extension.');
         }
 
-        $this->setting = $settings ?? new ProcessSetting();
+        $this->setting = $settings ?? new ProcessManagerSetting();
 
         if (!file_exists($this->setting->getAutoloaderPath())) {
             throw new FileNotFoundException(
@@ -57,16 +45,13 @@ class ProcessManager
             );
         }
 
-        $this->statistics = new ProcessStatistics();
+        $this->storage = new ProcessStorage();
+        $this->statistics = new ProcessManagerStatistics();
         $this->registerListener();
     }
 
-    /**
-     * @param \Core\IExecutable|callable $task
-     *
-     * @return \Core\Processes\Processable
-     * @exception FileNotFoundException
-     */
+
+
     public function add($task): Processable
     {
         if (!is_callable($task) && !$task instanceof Executable) {
@@ -79,23 +64,21 @@ class ProcessManager
             $this->setting->getPathToPhp(),//'php'
             $this->fileExecutor,
             $this->setting->getAutoloaderPath(),
-            TaskPacker::pack($task),
+            Serializator::serialize($task),
         ]);
 
-        // Поменять на $this->processes[$process->getId()] = $process;
-        // после того как проверю что все работает ключи не дублируются
-        $this->processes[$process->getId()][] = $process;
+        $process->bindStorage($this->storage);
 
         return $process;
     }
 
-    public function getStatistics(): ProcessStatistics
+    public function getStatistics(): ProcessManagerStatistics
     {
         $this->statistics->setInfo([
-            'processes' => $this->processes,
-            'finished'  => $this->finished,
-            'timeout'   => $this->timeouts,
-            'failed'    => $this->failed,
+            'processes' => $this->waiting,
+            'finished' => $this->finished,
+            'timeout' => $this->timeouts,
+            'failed' => $this->failed,
         ]);
 
         return $this->statistics;
@@ -131,15 +114,15 @@ class ProcessManager
 
     protected function markAsFinished(Process $process): void
     {
-        $process->stop(Status::FINISHED);
+        $process->finish(\Core\Processes\Status::FINISHED);
         $this->finished[$process->getId()] = $process;
-        unset($this->processes[$process->getId()]);
+        unset($this->waiting[$process->getId()]);
     }
 
     protected function markAsFailed(Process $process)
     {
-        $process->stop(Status::FAILED);
+        $process->finish(\Core\Processes\Status::FAILED);
         $this->failed[$process->getId()] = $process;
-        unset($this->processes[$process->getId()]);
+        unset($this->waiting[$process->getId()]);
     }
 }

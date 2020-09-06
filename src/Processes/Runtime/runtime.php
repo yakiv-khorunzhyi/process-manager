@@ -11,7 +11,7 @@ try {
         throw new InvalidArgumentException('Invalid closure.');
     }
 
-    $task = \Core\Processes\TaskPacker::unpack($serializedTask);
+    $task = \Core\Processes\Serializator::unserialize($serializedTask);
     $output = $task();
 
     fwrite(STDOUT, base64_encode(serialize($output)));
